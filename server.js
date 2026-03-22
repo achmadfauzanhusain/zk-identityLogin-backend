@@ -21,6 +21,14 @@ app.post("/login", async (req, res) => {
     return res.status(404).json({ error: "user not found" })
   }
 
+  console.log("public:", publicSignals)
+  console.log("user:", user.hash)
+
+  // cek apakah proof sesuai user
+  if (publicSignals[0] !== user.hash) {
+    return res.status(401).json({ error: "invalid identity" })
+  }
+
   try {
     const verified = await snarkjs.groth16.verify(
       vKey,
